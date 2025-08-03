@@ -8,6 +8,9 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Railway için port ayarı
+const HOST = '0.0.0.0';
+
 // CORS ayarları
 app.use(cors());
 app.use(express.json());
@@ -147,6 +150,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`Sunucu ${PORT} portunda çalışıyor`);
+app.listen(PORT, HOST, () => {
+  console.log(`Sunucu ${HOST}:${PORT} portunda çalışıyor`);
 }); 
