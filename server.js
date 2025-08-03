@@ -150,6 +150,32 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Upload edilen dosyaları listele
+app.get('/files', (req, res) => {
+  try {
+    const uploadsDir = './uploads';
+    if (!fs.existsSync(uploadsDir)) {
+      return res.json({ files: [] });
+    }
+
+    const files = fs.readdirSync(uploadsDir);
+    const fileList = files.map(file => {
+      const filePath = path.join(uploadsDir, file);
+      const stats = fs.statSync(filePath);
+      return {
+        name: file,
+        size: stats.size,
+        url: `${req.protocol}://${req.get('host')}/uploads/${file}`,
+        createdAt: stats.birthtime
+      };
+    });
+
+    res.json({ files: fileList });
+  } catch (error) {
+    res.status(500).json({ error: 'Dosyalar listelenemedi' });
+  }
+});
+
 app.listen(PORT, HOST, () => {
   console.log(`Sunucu ${HOST}:${PORT} portunda çalışıyor`);
 }); 
